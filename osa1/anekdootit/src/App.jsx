@@ -1,7 +1,12 @@
+// Unohdan aina kommentoida koodia. Petraan tässä!!
+
 import { useState } from 'react'
+
+// button saa  klikkauksen ja tekstin
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 
 const App = () => {
+  // anekdoottien taulukko
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -13,27 +18,42 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
    
+  // Tällä hetkellä tarkastelussa oleva ankdootti
   const [selected, setSelected] = useState(0)
+
+  // Anekdoottien äänimäärät taulukossa
+  // täytetty nollilla
   const [voted, setVoted] = useState(Array(anecdotes.length).fill(0))
 
+  // Antaa sattumanvaraisen anekdootin Math.randomilla (math.floor pyöristää lähimpään kokonaislukuun)
   const random = () => {
     const randomise = Math.floor(Math.random() * anecdotes.length)
     setSelected(randomise)
   }
 
+  // lisää äänen anekdootille
   const vote = () => {
     const copy = [...voted]
     copy[selected] += 1
+    // päivittää uuden taulukon
     setVoted(copy)
   }
 
+  // eniten ääniä saanut most -> äänimäärä, mostwotes -> indexi
+  const most = Math.max(...voted)
+  const mostVotes = voted.indexOf(most)
+
   return (
     <div>
+      <h1>anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {voted[selected]} votes.</p>
       <Button onClick={vote} text="vote" />
       <Button onClick={random} text="next anecdote" />
 
+      <h2>anecdote with most votes</h2>
+      <p>{anecdotes[mostVotes]}</p>
+      <p>has {voted[mostVotes]} votes.</p>
     </div>
   )
 }
