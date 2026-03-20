@@ -1,7 +1,10 @@
 import { useState } from 'react'
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 const StatisticLine = ({text, value}) => (
-  <p>{text} {value}</p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 )
 
 const Statistics = ({good, neutral, bad}) => {
@@ -35,14 +38,14 @@ const App = () => {
 
 
   return (
-    <div>
+    <table>
       <h1>give feedback</h1>
       <Button onClick={() => setGood(good + 1)}text = "good" />
       <Button onClick={() => setNeutral(neutral + 1)}text = "neutral" />
       <Button onClick={() => setBad(bad + 1)}text = "bad" />
       <h1>statistics</h1>
       <Statistics good={good} neutral={neutral} bad={bad} />
-    </div>
+    </table>
   )
 }
 
