@@ -29,6 +29,11 @@
       "name": "topi",
       "number": "12432529385",
       "id": "g-AL_L4aOwQ"
+    },
+    {
+      "name": "matti",
+      "number": "243589",
+      "id": "ndwf-sbfFCQ"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

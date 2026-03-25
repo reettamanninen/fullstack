@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 
 // yksittäinen henkilö
@@ -51,11 +52,9 @@ const App = () => {
 
   // Haetaan henkilöt palvelimelta
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
@@ -72,14 +71,13 @@ const App = () => {
       number: newNumber,
       id: String(persons.length + 1)
     }
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
-
-    axios
-      .post('http://localhost:3001/persons', newPerson)
+   
+     personService
+      .create(newPerson)
       .then(response => {
-        console.log(response)
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
       })
   }
 
