@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
-
+import Notification from './components/Notification'
+import './index.css'
 
 // yksittäinen henkilö
 const Person = ({person, handleDeletePerson}) => 
@@ -54,6 +55,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [okMessage, setOkMessage] = useState(null)
 
   // Haetaan henkilöt palvelimelta
   useEffect(() => {
@@ -81,9 +83,12 @@ const App = () => {
       .create(newPerson)
       .then(response => {
         setPersons(persons.concat(response.data))
+        setOkMessage(`Added ${response.data.name}`)
+        setTimeout(()=> setOkMessage(null), 1000)
         setNewName('')
         setNewNumber('')
       })
+      return
   }
 
   const showFilttered = persons.filter(person =>
@@ -107,8 +112,10 @@ const App = () => {
     if (window.confirm(`Do you want to delete ${name}?`)) {
       personService
         .deletePerson(id)
-        .then(() => {
+        .then((response) => {
           setPersons(persons.filter(person => person.id !== id))
+          setOkMessage(`Deleted ${response.data.name}`)
+          setTimeout(()=> setOkMessage(null), 1000)
         })
     }
   }
@@ -116,6 +123,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={okMessage} />
         <Filter filter={filter} handleFilter={handleFilter} />
       <h3>add a new</h3>
         <Form addPerson={addPerson} newName={newName}
