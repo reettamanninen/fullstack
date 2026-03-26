@@ -4,14 +4,18 @@ import personService from './services/persons'
 
 
 // yksittäinen henkilö
-const Person = ({person}) => 
-  <div>{person.name} {person.number}</div>
+const Person = ({person, handleDeletePerson}) => 
+  <div>{person.name} {person.number}
+    <button onClick={() => handleDeletePerson(person.id)}> 
+      delete
+    </button>
+  </div>
 
   // henkilöt lista
-  const Persons = ({persons}) => (
+  const Persons = ({persons, handleDeletePerson}) => (
     <div>
       {persons.map((person) => (
-        <Person key={person.name} person={person} />
+        <Person key={person.id} person={person} handleDeletePerson={handleDeletePerson}/>
         ))}
     </div>
   )
@@ -44,6 +48,7 @@ const Person = ({person}) =>
       </form>
   )
 
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
@@ -69,7 +74,7 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: String(persons.length + 1)
+      id: String (persons.length + 1)
     }
    
      personService
@@ -97,6 +102,17 @@ const App = () => {
   { console.log(event.target.value) 
     setFilter(event.target.value) }
 
+    //Henkilön poistaminen
+  const deletePerson = (id) => {
+    if (window.confirm(`Do you want to delete ${id}?`)) {
+      personService
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -106,7 +122,8 @@ const App = () => {
         newNumber={newNumber} handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-        <Persons persons={showFilttered} />
+        <Persons persons={showFilttered} 
+        handleDeletePerson={deletePerson}/>
     </div>
     
   )
