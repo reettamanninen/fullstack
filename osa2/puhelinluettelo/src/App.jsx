@@ -6,7 +6,7 @@ import personService from './services/persons'
 // yksittäinen henkilö
 const Person = ({person, handleDeletePerson}) => 
   <div>{person.name} {person.number}
-    <button onClick={() => handleDeletePerson(person.id)}> 
+    <button onClick={() => handleDeletePerson(person.id, person.name)}> 
       delete
     </button>
   </div>
@@ -103,8 +103,8 @@ const App = () => {
     setFilter(event.target.value) }
 
     //Henkilön poistaminen
-  const deletePerson = (id) => {
-    if (window.confirm(`Do you want to delete ${id}?`)) {
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Do you want to delete ${name}?`)) {
       personService
         .deletePerson(id)
         .then(() => {
