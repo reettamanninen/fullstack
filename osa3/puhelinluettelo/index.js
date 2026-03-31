@@ -1,6 +1,10 @@
-const http = require('http')
+const express = require('express')
+const { request, response } = require('express')
+const app = express()
 
-let persons = [
+app.use(express.json())
+
+const persons =[
     {
         id: 1,
         name: 'Arto Hellas',
@@ -22,21 +26,29 @@ let persons = [
         number: '39-23-6423122'
       }
 ]
-const app = http.createServer((request, response) => {
-    if (request.url === '/api/persons'){
-  response.writeHead(200, { 'Content-Type': 'application/json' })
-  response.end(JSON.stringify(persons))
-    }
-  else if (request.url === '/info'){
+
+app.get('/info', (request, response) => {
     const count = persons.length
     const time = new Date()
-    response.writeHead(200, { 'Content-Type': 'text/html' })
-    response.end(`
-    <p> Phonebook has info for ${count} people </p>
-    <p> ${time} </p>
-    `)
-    }
+    response.send(`<p> Phonebook has info for ${count} people </p>
+    <p> ${time} </p>`)}
+)
+
+app.get('/api/persons',(request, response) => {
+response.json(persons)
 })
+
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+        const person = persons.find(person => person.id === id)
+
+        if (person) {
+            response.json(person)
+          } else {
+            response.status(404).end('error: person not found')
+          }
+})
+
 
 const PORT = 3001
 app.listen(PORT)
