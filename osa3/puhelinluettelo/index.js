@@ -27,6 +27,15 @@ const app = http.createServer((request, response) => {
   response.writeHead(200, { 'Content-Type': 'application/json' })
   response.end(JSON.stringify(persons))
     }
+  else if (request.url === '/info'){
+    const count = persons.length
+    const time = new Date()
+    response.writeHead(200, { 'Content-Type': 'text/html' })
+    response.end(`
+    <p> Phonebook has info for ${count} people </p>
+    <p> ${time} </p>
+    `)
+    }
 })
 
 const PORT = 3001
