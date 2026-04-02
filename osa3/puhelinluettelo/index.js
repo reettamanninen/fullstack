@@ -3,9 +3,19 @@ const { request, response } = require('express')
 const app = express()
 const morgan = require('morgan')
 
-
 app.use(express.json())
+
+morgan.token('body', (request) =>{
+  return JSON.stringify(request.body)
+}
+)
+
 app.use(morgan('tiny'))
+app.use(morgan((tokens, request, response) => {
+  return tokens.body(request, response)
+}))
+
+
 
 let persons =[
     {
