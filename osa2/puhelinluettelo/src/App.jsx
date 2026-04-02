@@ -112,9 +112,9 @@ const App = () => {
     if (window.confirm(`Do you want to delete ${name}?`)) {
       personService
         .deletePerson(id)
-        .then((response) => {
+        .then(() => {
           setPersons(persons.filter(person => person.id !== id))
-          setOkMessage(`Deleted ${response.data.name}`)
+          setOkMessage(`Deleted ${name}`)
           setTimeout(()=> setOkMessage(null), 1000)
         })
     }
