@@ -56,7 +56,16 @@ app.delete('/api/persons/:id', (request, response, next) => {
   .catch(error => next(error))
   })
 
-  
+  app.put('/api/persons/:id', (request, response, next) => {
+    const {name, number} = request.body
+    Person.findByIdAndUpdate(
+      request.params.id,
+      {name, number }
+    )
+      .then(changeNumber => {
+        response.json(changeNumber)})
+        .catch(error => next(error))
+      })
 
   app.post('/api/persons', (request, response, next) => {
     const body = request.body
