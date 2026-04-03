@@ -23,11 +23,15 @@ app.use(morgan((tokens, request, response) => {
 
 
 app.get('/info', (request, response, next) => {
-    const count = persons.length
-    const time = new Date()
-    response.send(`<p> Phonebook has info for ${count} people </p>
-    <p> ${time} </p>`)}
-)
+   Person.find({})
+    .then(persons =>{
+      const count = persons.length
+      const time = new Date()
+      response.send(`<p> Phonebook has info for ${count} people </p>
+    <p> ${time} </p>`)})
+    .catch(error => next(error))
+    } )
+
 
 app.get('/api/persons',(request, response, next) => {
 Person.find({}).then(persons => {
