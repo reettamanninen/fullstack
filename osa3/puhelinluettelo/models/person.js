@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 
 const password = process.argv[2]
-const url = `mongodb+srv://retumanninen_db_user:${password}@cluster0.dfxvqbm.mongodb.net/peopleApp?appName=Cluster0`
+const url = `mongodb+srv://retumanninen_db_user:${password}@cluster0.dfxvqbm.mongodb.net/peopleApp?retryWrites=true&w=majority`
 
 
 console.log('connecting to', url)
