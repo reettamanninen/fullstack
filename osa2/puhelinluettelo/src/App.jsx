@@ -56,6 +56,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [okMessage, setOkMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   // Haetaan henkilöt palvelimelta
   useEffect(() => {
@@ -101,6 +102,12 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      .catch(error => {
+        console.log(error.response.data)
+        setErrorMessage(error.response.data.error)
+        setTimeout(()=> setErrorMessage(null), 3000)
+      })
+      
       return
   }
 
@@ -136,7 +143,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={okMessage} />
+      <Notification message={okMessage} type="ok" />
+      <Notification message={errorMessage} type="error" />
         <Filter filter={filter} handleFilter={handleFilter} />
       <h3>add a new</h3>
         <Form addPerson={addPerson} newName={newName}
