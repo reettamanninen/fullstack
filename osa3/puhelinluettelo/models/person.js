@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
+//ajaessa pitää käyttää MONGO_PASSWORD='(tähän salasana)' node index.js
 const password = process.env.MONGO_PASSWORD
 const url = `mongodb+srv://retumanninen_db_user:${password}@cluster0.dfxvqbm.mongodb.net/peopleApp?retryWrites=true&w=majority`
 
