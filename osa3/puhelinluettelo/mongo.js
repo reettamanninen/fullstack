@@ -16,8 +16,8 @@ mongoose.set('strictQuery', false)
 mongoose.connect(url, { family: 4 })
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String
+  name: String,
+  number: String
 })
 
 const Person = mongoose.model('Person', personSchema)
@@ -29,23 +29,23 @@ const person = new Person({
 
 // jos annetaan nimi ja numero -> lisätään nimi/numero
 if (name && number) {
-    const person = new Person({name, number})
+  const person = new Person({ name, number })
 
 
-person.save().then(() => {
+  person.save().then(() => {
     console.log(`added ${name} number ${number} to phonebook`)
     mongoose.connection.close()
   })
 } //jos vain salasan -> tulostaa listan
 else if (!name && !number) {
-    Person.find({})
-        .then(persons => {
-            console.log('phonebook:')
-            persons.forEach(person => {
-            console.log(`${person.name} ${person.number}`)
-        })
-        mongoose.connection.close()
+  Person.find({})
+    .then(persons => {
+      console.log('phonebook:')
+      persons.forEach(person => {
+        console.log(`${person.name} ${person.number}`)
+      })
+      mongoose.connection.close()
     })
-    
+
 }
 
