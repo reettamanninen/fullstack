@@ -89,7 +89,7 @@ app.post('/api/persons', (request, response, next) => {
     .catch(error => next(error))
 })
 
-const errorHandler = (error, response, next) => {
+const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
