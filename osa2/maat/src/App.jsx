@@ -10,27 +10,29 @@ import axios from 'axios'
     </div>
   )
 
-  //listaa kun alle 10
-  const TenCountries = ({countries}) => (
+  //listaa kun 10 tai alle ja show buttonilla voi valita yhden
+  // näyttää sillon saman kuin onecountry
+  const TenCountries = ({countries, handleShow}) => (
     <div>
       {countries.map(country => (
         <div key={country.name}>
             {country.name.common}
-            <button>Show</button>
+            <button onClick={() => handleShow(country.name.common)}>Show</button>
         </div>
         
       ))}
     </div>
   )
 
+  // näyttää yhden ja siitä tiedot (perustiedot, lippu ja kielet)
 const OneCountry = ({country}) => {
   const languages = Object.values(country.languages)
 
   return (
     <div>
       <h1>{country.name.common}</h1>
-      <p>capital {country.capital}</p>
-      <p>area {country.area}</p>
+      <p>Capital {country.capital}</p>
+      <p>Area {country.area}</p>
       <h2>Languages</h2>
       <ul>
         {languages.map(lang => (
