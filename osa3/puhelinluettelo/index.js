@@ -32,7 +32,7 @@ app.get('/info', (request, response, next) => {
 })
 
 
-app.get('/api/persons',(response, next) => {
+app.get('/api/persons',(request, response, next) => {
   Person.find({}).then(persons => {
     response.json(persons)
   })
