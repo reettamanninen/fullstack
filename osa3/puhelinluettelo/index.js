@@ -21,7 +21,7 @@ app.use(morgan((tokens, request, response) => {
 }))
 
 
-app.get('/info', (response, next) => {
+app.get('/info', (request, response, next) => {
   Person.find({})
     .then(persons => {
       const count = persons.length
