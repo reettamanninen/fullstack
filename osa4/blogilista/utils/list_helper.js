@@ -45,14 +45,37 @@ const mostBlogs = (blogs) => {
         author: ennatysbloggaaja,
         blogs: most
     }
+}
 
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) {
+        return null
+    }
+    const yhteensa = blogs.reduce((lisaa, blog) => {
+        const author = blog.author
+        lisaa[author] = (lisaa[author] || 0) + blog.likes 
+        return lisaa
+    }, {})
 
+    let tykatyinAuthor = null
+    let mostTykatty = 0
 
+    for (const author in yhteensa) {
+        if (yhteensa[author] > mostTykatty){
+            mostTykatty = yhteensa[author]
+            tykatyinAuthor = author
+        }
+    }
+    return {
+        author: tykatyinAuthor,
+        likes: mostTykatty
+    }
 }
 
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
