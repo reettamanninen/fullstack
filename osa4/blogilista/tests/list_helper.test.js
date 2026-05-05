@@ -81,10 +81,10 @@ describe('total likes', () => {
 
 
   describe('total likes', () => {
-    const listWithManyBlog = []
+    const listWith0Blog = []
 
   test('of empty list = 0', () => {
-      const result = listHelper.totalLikes(listWithManyBlog)
+      const result = listHelper.totalLikes(listWith0Blog)
       assert.strictEqual(result, 0)
   })
 })
