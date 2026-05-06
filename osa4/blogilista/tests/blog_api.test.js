@@ -5,6 +5,7 @@ const app = require('../app')
 const Blogi = require('../models/blogi')
 
 const assert = require('node:assert')
+const { url } = require('node:inspector')
 const api = supertest(app)
 
 const blogit = [
@@ -52,6 +53,40 @@ test('blogs are returned as json', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 })
+
+test('a valid blog can be added ', async () => {
+    const newBlogi = {
+    _id: '503f1f77bcf86cd799439013',
+      title: 'fseg',
+      author: 'sdnslkdfg',
+      url: 'dkjsnkvgewf',
+      likes: 1
+    }
+  
+    await api
+      .post('/api/blogit')
+      .send(newBlogi)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  
+    const response = await api.get('/api/blogit')
+  
+    const titles = response.body.map(r => r.title)
+    assert.strictEqual(response.body.length, blogit.length + 1)
+    assert(titles.includes('fseg'))
+
+    const authors = response.body.map(r => r.author)
+    assert.strictEqual(response.body.length, blogit.length + 1)
+    assert(authors.includes('sdnslkdfg'))
+
+    const urls = response.body.map(r => r.url)
+    assert.strictEqual(response.body.length, blogit.length + 1)
+    assert(urls.includes('dkjsnkvgewf'))
+
+    const likess = response.body.map(r => r.likes)
+    assert.strictEqual(response.body.length, blogit.length + 1)
+    assert(likess.includes(1))
+  })
 
 after(async () => {
   await mongoose.connection.close()
