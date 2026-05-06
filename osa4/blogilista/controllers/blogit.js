@@ -6,6 +6,9 @@ blogitRouter.get('/', (request, response) =>
 )
 
 blogitRouter.post('/', (request, response) => {
+    if(!request.body.title || !request.body.url) {
+        return response.status(400).end()
+    }
     const blogi = new Blogi(request.body)
     blogi.save().then(result => {
         response.status(201).json(result)

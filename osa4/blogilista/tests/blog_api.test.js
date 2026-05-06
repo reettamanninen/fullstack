@@ -104,6 +104,17 @@ test('a valid blog can be added ', async () => {
     assert.strictEqual(add.body.likes, 0)
   })
 
+  test('blog without title or url get badrequest', async () => {
+    const newBlogi = {
+      author: 'dfwenkg',
+      likes: 3
+   }
+    await api
+      .post('/api/blogit')
+      .send(newBlogi)
+      .expect(400)
+  })
+
 after(async () => {
   await mongoose.connection.close()
 })
