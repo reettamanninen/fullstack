@@ -17,4 +17,9 @@ blogitRouter.post('/', (request, response) => {
 }
 )
 
+blogitRouter.delete('/:id', async (request, response) => {
+    await Blogi.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  })
+
 module.exports = blogitRouter

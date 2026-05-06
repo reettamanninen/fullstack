@@ -147,3 +147,19 @@ const blogitInDb = async () => {
         assert.strictEqual(blogi._id, undefined)
     })
   })
+
+  test('a blog can be deleted', async () => {
+    const blogsAtStart = await blogitInDb()
+    const blogToDelete = blogsAtStart[0]
+  
+    await api
+      .delete(`/api/blogit/${blogToDelete.id}`)
+      .expect(204)
+  
+    const blogsAtEnd = await blogitInDb()
+  
+    const ids = blogsAtEnd.map(n => n.id)
+    assert(!ids.includes(blogToDelete.id))
+  
+    assert.strictEqual(blogsAtEnd.length, blogit.length - 1)
+  })
