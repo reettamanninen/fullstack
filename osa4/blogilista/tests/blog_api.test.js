@@ -9,31 +9,31 @@ const api = supertest(app)
 
 const blogit = [
     
-        {
-           
-            title: 'Go To Statement Considered Harmful',
-            author: 'Edsger W. Dijkstra',
-            url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-            likes: 3,
-            __v: 0
-          },
-          {
-            
-            title: 'Go To ',
-            author: 'Edsger',
-            url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-            likes: 5,
-            __v: 0
-          },
-          {
-           
-            title: 'Go To ',
-            author: 'Edsger',
-            url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-            likes: 0,
-            __v: 0
-          }
-    
+    {
+       _id: '507f1f77bcf86cd799439011',
+        title: 'Go To Statement Considered Harmful',
+        author: 'Edsger W. Dijkstra',
+        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+        likes: 3,
+        __v: 0
+      },
+      {
+        _id: '507f1f77bcf86cd799439012',
+        title: 'Go To ',
+        author: 'Edsger',
+        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+        likes: 5,
+        __v: 0
+      },
+      {
+      _id: '507f1f77bcf86cd799439013',
+        title: 'Go To ',
+        author: 'Edsger',
+        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+        likes: 0,
+        __v: 0
+      }
+
 ]
 
 beforeEach(async () => {
@@ -66,3 +66,22 @@ test('oikea määrä', async () => {
 
         assert.strictEqual(response.body.length, blogit.length)
 })
+
+const blogitInDb = async () => {
+    const blogit = await Blogi.find({})
+    return blogit.map(blogi => blogi.toJSON())
+  }
+  
+  module.exports = {
+    blogit, blogitInDb
+  }
+
+  test('id identifioi', async () => {
+    const response = await api.get('/api/blogit')
+    const blogit = response.body
+
+    blogit.forEach(blogi => {
+        assert.ok(blogi.id)
+        assert.strictEqual(blogi._id, undefined)
+    })
+  })
