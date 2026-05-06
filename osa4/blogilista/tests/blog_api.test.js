@@ -163,3 +163,22 @@ const blogitInDb = async () => {
   
     assert.strictEqual(blogsAtEnd.length, blogit.length - 1)
   })
+
+  test('a blog can be edited', async () => {
+    const blogsAtStart = await blogitInDb()
+    const blogToEdit = blogsAtStart[0]
+  
+    const updatedBlog = {
+        likes: blogToEdit.likes + 1
+    }
+
+    await api
+      .put(`/api/blogit/${blogToEdit.id}`)
+      .send(updatedBlog)
+      .expect(200)
+  
+    const blogsAtEnd = await blogitInDb()
+  
+    const edit = blogsAtEnd.find(r => r.id === blogToEdit.id)  
+    assert.strictEqual(edit.likes, blogToEdit.likes + 1)
+  })

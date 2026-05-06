@@ -22,4 +22,22 @@ blogitRouter.delete('/:id', async (request, response) => {
     response.status(204).end()
   })
 
+  blogitRouter.put('/:id', (request, response, next) => {
+    const { likes } = request.body
+  
+    Blogi.findById(request.params.id)
+      .then(blogi => {
+        if (!blogi) {
+          return response.status(404).end()
+        }
+  
+        blogi.likes = likes
+  
+        return blogi.save().then((result) => {
+          response.status(200).json(result)
+        })
+      })
+      .catch(error => next(error))
+  })
+
 module.exports = blogitRouter
