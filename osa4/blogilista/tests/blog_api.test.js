@@ -88,6 +88,22 @@ test('a valid blog can be added ', async () => {
     assert(likess.includes(1))
   })
 
+  test('blog without likes is not added', async () => {
+    const newBlogi = {
+      title: 'ewfwe',
+      author: 'dfwenkg',
+      url: 'fwskegjwbek'
+   }
+  
+    const add = await api
+      .post('/api/blogit')
+      .send(newBlogi)
+      .expect(201)
+  
+     
+    assert.strictEqual(add.body.likes, 0)
+  })
+
 after(async () => {
   await mongoose.connection.close()
 })
