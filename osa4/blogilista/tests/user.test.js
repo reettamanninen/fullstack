@@ -1,7 +1,17 @@
 const bcrypt = require('bcrypt')
-const User = require('../models/user')
+const mongoose = require('mongoose')
 
-//...
+const assert = require('node:assert')
+
+const User = require('../models/user')
+const helper = require('./test_helper')
+const app = require('../app')
+const supertest = require('supertest')
+const api = supertest(app)
+const { test, describe, beforeEach, after } = require('node:test')
+
+
+
 
 describe('when there is initially one user at db', () => {
   beforeEach(async () => {
@@ -34,6 +44,8 @@ describe('when there is initially one user at db', () => {
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
 
+  
+
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 
@@ -55,4 +67,53 @@ describe('when there is initially one user at db', () => {
     const usernames = usersAtEnd.map(u => u.username)
     assert(usernames.includes(newUser.username))
   })
+
+  test('fails when username length is under 3', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'sd',
+      name: 'Tasfaf',
+      password: 'saosjfiboea'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(result.body.error.includes('käyttäjätunnuksen tulee olla vähintään 3 merkkiä pitkä'))
+
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+  })
+
+  test('fails when password length is under 3', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'sds',
+      name: 'Tadsdgdsg',
+      password: 'sa'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(result.body.error.includes('salasanan tulee olla vähintään 3 merkkiä pitkä'))
+
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+
+  })
+
+})
+
+after(async () => {
+  await mongoose.connection.close()
 })
