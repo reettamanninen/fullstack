@@ -53,7 +53,20 @@ blogitRouter.post('/', async (request, response) => {
 })
 
 blogitRouter.delete('/:id', async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+    const blogi = await Blogi.findById(request.params.id)
+
+    if (!blogi) {
+      return response.status(404).json({ error: 'blog missing' })
+    }
+    if (blogi.user.toString() !== decodedToken.id.toString()) {
+      return response.status(401).json({error: 'unauthorized'})
+    }
     await Blogi.findByIdAndDelete(request.params.id)
+   
     response.status(204).end()
   })
 
