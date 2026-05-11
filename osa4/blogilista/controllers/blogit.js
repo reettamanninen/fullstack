@@ -1,6 +1,7 @@
 const blogitRouter = require('express').Router()
 const Blogi = require('../models/blogi')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 
 blogitRouter.get('/', async (request, response) => {
@@ -14,11 +15,26 @@ blogitRouter.get('/', async (request, response) => {
   response.json(blogit)
 })
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 blogitRouter.post('/', async (request, response) => {
   const body = request.body
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
 
-  const users = await User.find({})
-  const user = users[0]
+  if (!user) {
+    return response.status(400).json({ error: 'UserId missing or not valid' })
+  }
+
 
   const blogi = new Blogi({
     title: body.title,
