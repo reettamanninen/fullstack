@@ -33,8 +33,16 @@ if (username.length < 3) {
 })
 
 usersRouter.get('/', async (request, response) => {
-    const users = await User.find({})
-    response.json(users)
-  })
+  const users = await User
+    .find({})
+    .populate('blogit', {
+      title: 1,
+      author: 1,
+      url: 1,
+      likes: 1
+    })
+
+  response.json(users)
+})
 
 module.exports = usersRouter
