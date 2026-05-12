@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogit
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcnR0aSIsImlkIjoiNmEwMTkyMWYzN2Y5MWFiOGNiOWI1MmE4IiwiaWF0IjoxNzc4NDg3ODUyfQ.8fGAZLwphwQe_wtcNrR1xxL5trBPpXil-AIEMZVttNA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvcGkiLCJpZCI6IjZhMDIwMjA5NDYwMTBlNGVlZjAzOGRjYiIsImlhdCI6MTc3ODUxNjUyNH0.XsNmf-w3fNtV2Mh7gKt5wgBbwvx2DFlFZ8BTiJwU-zs
 
 {
     "title": "jepu",

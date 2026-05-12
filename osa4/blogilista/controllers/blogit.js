@@ -2,7 +2,7 @@ const blogitRouter = require('express').Router()
 const Blogi = require('../models/blogi')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-
+const middleware = require('../utils/middleware')
 
 blogitRouter.get('/', async (request, response) => {
   const blogit = await Blogi
@@ -15,26 +15,14 @@ blogitRouter.get('/', async (request, response) => {
   response.json(blogit)
 })
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
 
-blogitRouter.post('/', async (request, response) => {
+
+blogitRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
-  }
-  const user = await User.findById(decodedToken.id)
-
+  const user = request.user
   if (!user) {
     return response.status(400).json({ error: 'UserId missing or not valid' })
   }
-
 
   const blogi = new Blogi({
     title: body.title,
@@ -52,11 +40,13 @@ blogitRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlogi)
 })
 
-blogitRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
-  }
+blogitRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  
+  const user = request.user
+if (!user) {
+  return response.status(401).json({ error: 'token invalid'})
+}
+
     const blogi = await Blogi.findById(request.params.id)
 
     if (!blogi) {
