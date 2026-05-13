@@ -9,6 +9,14 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+
+  useEffect(() => {
+    blogService.getAll().then(blogs => setBlogs(blogs))
+  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -39,6 +47,22 @@ const App = () => {
 const handleLogout = () => {
   window.localStorage.removeItem('loggedUser')
   setUser(null)
+}
+
+const handleAddBlog = async (event) => {
+  event.preventDefault()
+  try {
+    const newBlog = await blogService.create({ title, author, url})
+    setBlogs(blogs.concat(newBlog))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+   } catch (exception) {
+      setErrorMessage('couldnt add blog')
+      setTimeout(() =>
+        setErrorMessage(null), 5000)
+      
+    }
 }
 
 
@@ -76,10 +100,43 @@ const handleLogout = () => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-      {blogs.map(blog =>
+      <h2>create new</h2>
+      <form onSubmit={handleAddBlog}>
+          <div>
+            title:{' '}
+            <input
+              type="text"
+              value={title}
+              onChange={({ target}) =>
+            setTitle(target.value)}
+            />
+          </div>
+          <div>
+            author:{' '}
+            <input
+              type="text"
+              value={author}
+              onChange={({ target}) =>
+            setAuthor(target.value)}
+            />
+          </div>
+          <div>
+            url:{' '}
+            <input
+              type="text"
+              value={url}
+              onChange={({ target}) =>
+            setUrl(target.value)}
+            />
+          </div>
+          <button type="submit">create</button>
+        </form>
+
+        {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
     </div>
+    
   )
       }
 
