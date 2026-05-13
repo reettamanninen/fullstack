@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogNotification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,7 +14,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-
+const [okMessage, setOkMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
@@ -26,6 +28,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -57,6 +61,8 @@ const handleAddBlog = async (event) => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setOkMessage(`a new blog ${title} added`)
+    setTimeout(() => setOkMessage(null), 5000)
    } catch (exception) {
       setErrorMessage('couldnt add blog')
       setTimeout(() =>
@@ -69,8 +75,8 @@ const handleAddBlog = async (event) => {
   if (user === null) {
     return (
       <div>
+         <BlogNotification message={errorMessage} type="error" />
         <h2>Log in to application</h2>
-        {errorMessage && <p style={{color: 'red'}}>{errorMessage}</p>}
         <form onSubmit={handleLogin}>
           <div>
             username{' '}
@@ -98,6 +104,8 @@ const handleAddBlog = async (event) => {
 
   return (
     <div>
+      <BlogNotification message={okMessage} type="ok" />
+      <BlogNotification message={errorMessage} type="error" />
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
       <h2>create new</h2>
