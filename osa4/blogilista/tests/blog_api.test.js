@@ -5,9 +5,10 @@ const app = require('../app')
 const Blogi = require('../models/blogi')
 
 const assert = require('node:assert')
-const { url } = require('node:inspector')
+
 const api = supertest(app)
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 const blogit = [
     
@@ -38,6 +39,15 @@ const blogit = [
 
 ]
 
+const blogitInDb = async () => {
+  const blogit = await Blogi.find({})
+  return blogit.map(blogi => blogi.toJSON())
+}
+
+module.exports = {
+  blogit, blogitInDb
+}
+
 describe('blog api testit', { concurrency: false}, () => {
 let token
 
@@ -45,10 +55,11 @@ beforeEach(async () => {
     await Blogi.deleteMany({})
   await User.deleteMany({})
 
+  const passwordHash = await bcrypt.hash('sdfdsf', 10)
     const user = new User ({
       username: 'perti',
       name: 'matti mattinen',
-      passwordHash: await require('bcrypt').hash('sdfdsf', 5)
+      passwordHash
     })
 
   await user.save()
@@ -61,7 +72,7 @@ beforeEach(async () => {
     })
 
     token = login.body.token
-
+  
     let blogiObject = new Blogi({
       ...blogit[0],
       user: user._id})
@@ -86,7 +97,7 @@ test('blogs are returned as json', async () => {
 
 test('a valid blog can be added ', async () => {
     const newBlogi = {
-    _id: '503f1f77bcf86cd799439013',
+    
       title: 'fseg',
       author: 'sdnslkdfg',
       url: 'dkjsnkvgewf',
@@ -148,10 +159,6 @@ test('a valid blog can be added ', async () => {
       .expect(400)
   })
 
-after(async () => {
-  await mongoose.connection.close()
-})
-
 test('oikea määrä', async () => {
     await api
         .get('/api/blogit')
@@ -162,14 +169,7 @@ test('oikea määrä', async () => {
         assert.strictEqual(response.body.length, blogit.length)
 })
 
-const blogitInDb = async () => {
-    const blogit = await Blogi.find({})
-    return blogit.map(blogi => blogi.toJSON())
-  }
-  
-  module.exports = {
-    blogit, blogitInDb
-  }
+
 
   test('id identifioi', async () => {
     const response = await api.get('/api/blogit')
@@ -216,4 +216,9 @@ const blogitInDb = async () => {
     const edit = blogsAtEnd.find(r => r.id === blogToEdit.id)  
     assert.strictEqual(edit.likes, blogToEdit.likes + 1)
   })
+
+  after(async () => {
+    await mongoose.connection.close()
+  })
+
 })

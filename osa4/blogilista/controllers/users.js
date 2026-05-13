@@ -17,6 +17,15 @@ if (!username || username.length < 3) {
         error: 'käyttäjätunnuksen tulee olla vähintään 3 merkkiä pitkä'
     })
 }
+
+const existingUser = await User.findOne({ username })
+if (existingUser){
+  return response.status(400).json({
+    error: 'expected `username` to be unique'
+  })
+}
+
+
   const passwordHash = await bcrypt.hash(password, 10)
 
   const user = new User({
