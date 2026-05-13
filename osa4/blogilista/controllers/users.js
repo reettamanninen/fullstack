@@ -3,23 +3,21 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 const mongoose = require('mongoose')
 
-usersRouter.post('/', async (request, response) => {
-  const { username, name, password } = request.body
+usersRouter.post('/', async (request, response, next) => {
+  try { const { username, name, password } = request.body
 
-if (password.length < 3) {
+if (!password || password.length < 3) {
     return response.status(400).json ({
         error: 'salasanan tulee olla vähintään 3 merkkiä pitkä'
     })
 }
 
-if (username.length < 3) {
+if (!username || username.length < 3) {
     return response.status(400).json ({
         error: 'käyttäjätunnuksen tulee olla vähintään 3 merkkiä pitkä'
     })
 }
-
-  const saltRounds = 10
-  const passwordHash = await bcrypt.hash(password, saltRounds)
+  const passwordHash = await bcrypt.hash(password, 10)
 
   const user = new User({
     username,
@@ -30,6 +28,10 @@ if (username.length < 3) {
   const savedUser = await user.save()
 
   response.status(201).json(savedUser)
+
+} catch (error) {
+  next(error)
+}
 })
 
 usersRouter.get('/', async (request, response) => {

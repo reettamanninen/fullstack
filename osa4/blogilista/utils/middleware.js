@@ -44,26 +44,25 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
-const userExtractor = (request, response, next) => {
-  
-  const token = request.token
 
-  if (!token) {
-    request.user = null
-    return next()
+const userExtractor = async (request, response, next) => {
+  const authorization = request.get('authorization')
+  console.log('SECRET:', process.env.SECRET)        // lisää tämä
+  console.log('authorization:', authorization) 
+  request.user = null
+
+  try {
+    if (authorization && authorization.startsWith('Bearer ')) {
+      const token = authorization.replace('Bearer ', '')
+      const decodedToken = jwt.verify(token, process.env.SECRET)
+
+      request.user = await User.findById(decodedToken.id)
+    }
+  } catch (error) {
+    return next(error)
   }
 
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-
-  if (!decodedToken.id) {
-    request.user = null
-    return next()
-  }
-
-  User.findById(decodedToken.id).then(user => {
-    request.user = user
-    next()
-  })
+  next()
 }
 
 module.exports = {

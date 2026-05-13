@@ -21,9 +21,12 @@ blogitRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body
   const user = request.user
   if (!user) {
-    return response.status(400).json({ error: 'UserId missing or not valid' })
+    return response.status(401).json({ error: 'unauthorized' })
   }
 
+  if (!body.title || !body.url) {
+    return response.status(400).json ({error: 'tittle or url missing'})
+  }
   const blogi = new Blogi({
     title: body.title,
     author: body.author,
@@ -52,7 +55,7 @@ if (!user) {
     if (!blogi) {
       return response.status(404).json({ error: 'blog missing' })
     }
-    if (blogi.user.toString() !== decodedToken.id.toString()) {
+    if (blogi.user.toString() !== user.id.toString()) {
       return response.status(401).json({error: 'unauthorized'})
     }
     await Blogi.findByIdAndDelete(request.params.id)

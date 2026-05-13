@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -7,6 +7,7 @@ const Blogi = require('../models/blogi')
 const assert = require('node:assert')
 const { url } = require('node:inspector')
 const api = supertest(app)
+const User = require('../models/user')
 
 const blogit = [
     
@@ -37,15 +38,44 @@ const blogit = [
 
 ]
 
+describe('blog api testit', { concurrency: false}, () => {
+let token
+
 beforeEach(async () => {
     await Blogi.deleteMany({})
-    let blogiObject = new Blogi(blogit[0])
+  await User.deleteMany({})
+
+    const user = new User ({
+      username: 'perti',
+      name: 'matti mattinen',
+      passwordHash: await require('bcrypt').hash('sdfdsf', 5)
+    })
+
+  await user.save()
+
+  const login = await api
+    .post('/api/login')
+    .send({
+      username: 'perti',
+      password: 'sdfdsf'
+    })
+
+    token = login.body.token
+
+    let blogiObject = new Blogi({
+      ...blogit[0],
+      user: user._id})
     await blogiObject.save()
-    blogiObject = new Blogi(blogit[1])
+    blogiObject = new Blogi({
+      ...blogit[1],
+      user: user._id})
     await blogiObject.save()
-    blogiObject = new Blogi(blogit[2])
+    blogiObject = new Blogi({
+      ...blogit[2],
+      user: user._id})
     await blogiObject.save()
-  })
+
+})
 
 test('blogs are returned as json', async () => {
   await api
@@ -65,6 +95,7 @@ test('a valid blog can be added ', async () => {
   
     await api
       .post('/api/blogit')
+      .set ('Authorization', `Bearer ${token}`)
       .send(newBlogi)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -97,6 +128,7 @@ test('a valid blog can be added ', async () => {
   
     const add = await api
       .post('/api/blogit')
+      .set ('Authorization', `Bearer ${token}`)
       .send(newBlogi)
       .expect(201)
   
@@ -111,6 +143,7 @@ test('a valid blog can be added ', async () => {
    }
     await api
       .post('/api/blogit')
+      .set ('Authorization', `Bearer ${token}`)
       .send(newBlogi)
       .expect(400)
   })
@@ -154,6 +187,7 @@ const blogitInDb = async () => {
   
     await api
       .delete(`/api/blogit/${blogToDelete.id}`)
+      .set ('Authorization', `Bearer ${token}`)
       .expect(204)
   
     const blogsAtEnd = await blogitInDb()
@@ -182,3 +216,4 @@ const blogitInDb = async () => {
     const edit = blogsAtEnd.find(r => r.id === blogToEdit.id)  
     assert.strictEqual(edit.likes, blogToEdit.likes + 1)
   })
+})
