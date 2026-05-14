@@ -81,6 +81,13 @@ const handleLike = async (blog) => {
   setBlogs(blogs.map(r => r.id === blog.id ? {...got, user: blog.user } : r))
 }
 
+const handleRemove = async (blog) => {
+  if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter(r => r.id !== blog.id))
+  }
+}
+
 const newBlogForm = () => {
   const hideWhenVisible = { display: blogFormShown ? 'none' : '' }
     const showWhenVisible = { display: blogFormShown ? '' : 'none' }
@@ -138,7 +145,7 @@ const newBlogForm = () => {
        {newBlogForm()}
        {blogs.sort((a,b) => b.likes - a.likes)
        .map(blog =>
-  <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+  <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemove={handleRemove} user={user} />
 )}
     </div>
     
