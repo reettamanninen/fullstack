@@ -55,7 +55,7 @@ const handleLogout = () => {
 const handleAddBlog = async (blogObject) => {
   try {
     const newBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(newBlog))
+    setBlogs(blogs.concat({...newBlog, user: user}))
     setOkMessage(`a new blog ${blogObject.title} added`)
     setTimeout(() => setOkMessage(null), 5000)
    } catch (exception) {
@@ -78,6 +78,7 @@ const handleLike = async (blog) => {
 }
 
 const handleRemove = async (blog) => {
+  
   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       await blogService.remove(blog.id)
       setBlogs(blogs.filter(r => r.id !== blog.id))

@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { ECDH } = require('crypto')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -54,18 +55,32 @@ describe('Blog app', () => {
       await expect(page.getByText('wetrwt wrhrnyjyr')).toBeVisible()
     })
 
-    test('a blog can be liked', async ({ page }) => {
+    describe('created blog', () => {
+      beforeEach(async ({ page }) => {
         await page.getByRole('button', { name: 'create new blog' }).click()
-        await page.getByPlaceholder('title').fill('test blog')
-        await page.getByPlaceholder('author').fill('test author')
+        await page.getByPlaceholder('title').fill('test')
+        await page.getByPlaceholder('author').fill('test')
         await page.getByPlaceholder('url').fill('testurl')
         await page.getByRole('button', { name: 'create' }).click()
-        await page.getByText('test blog test author').waitFor()
+        await page.getByText('test test').waitFor()
+      })
+    test('a blog can be liked', async ({ page }) => {
       
         await page.getByRole('button', { name: 'view' }).click()
         await expect(page.getByText('likes 0')).toBeVisible()
         await page.getByRole('button', { name: 'like' }).click()
         await expect(page.getByText('likes 1')).toBeVisible()
       })
+
+      test('a blog can be deleted', async ({ page }) => {
+        page.on('dialog', dialog => dialog.accept())
+        await page.getByRole('button', {name: 'view'}).click()
+        await expect(page.getByRole('button', {name:'remove'})).toBeVisible()
+        await page.getByRole('button', {name:'remove'}).click()
+  
+        
+        await expect(page.getByText('test test')).not.toBeVisible()
+      })
     })
   })
+})
