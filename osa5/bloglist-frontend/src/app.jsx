@@ -14,9 +14,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  
 const [okMessage, setOkMessage] = useState(null)
 const [blogFormShown, setBlogFormShown] = useState(false)
 

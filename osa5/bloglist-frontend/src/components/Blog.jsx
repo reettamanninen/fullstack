@@ -1,7 +1,29 @@
-const Blog = ({ blog }) => (
+import { useState } from 'react'
+
+const Blog = ({ blog }) => {
+  const [showInfo, setShowInfo] = useState(false)
+
+
+  return (
     <div>
-      {blog.title} {blog.author}
-    </div>  
+      <div>
+        {blog.title} {blog.author}
+        <button onClick={() => setShowInfo(!showInfo)}>
+          {showInfo ? 'hide' : 'view'}
+        </button>
+      </div>
+      {showInfo && (
+        <div>
+          <div>{blog.url}</div>
+          <div>
+            likes {blog.likes}
+            <button>like</button>
+          </div>
+          <div>{blog.user.name}</div>
+        </div>
+      )}
+    </div> 
   )
+ }
   
   export default Blog
