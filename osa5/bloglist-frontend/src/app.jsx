@@ -57,14 +57,10 @@ const handleLogout = () => {
   setUser(null)
 }
 
-const handleAddBlog = async (event) => {
-  event.preventDefault()
+const handleAddBlog = async (blogObject) => {
   try {
-    const newBlog = await blogService.create({ title, author, url})
+    const newBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(newBlog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
     setOkMessage(`a new blog ${title} added`)
     setTimeout(() => setOkMessage(null), 5000)
    } catch (exception) {
@@ -85,15 +81,7 @@ const newBlogForm = () => {
           <button onClick={() => setBlogFormShown(true)}>create new blog</button>
         </div>
         <div style={showWhenVisible}>
-        <NewBlogForm
-            title={title}
-            author={author}
-            url={url}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            handleUrlChange={({ target }) => setUrl(target.value)}
-            handleSubmit={handleAddBlog}
-          />
+        <NewBlogForm createBlog={handleAddBlog}/>
           <button onClick={() => setBlogFormShown(false)}>cancel</button>
         </div>
       </div>
