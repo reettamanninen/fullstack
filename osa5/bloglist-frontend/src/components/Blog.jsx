@@ -25,8 +25,8 @@ const Blog = ({ blog, handleLike, handleRemove, user }) => {
           )}
         </div>
       )}
-    </div> 
+    </div>
   )
  }
-  
+
   export default Blog

@@ -14,7 +14,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
-  
 const [okMessage, setOkMessage] = useState(null)
 const [blogFormShown, setBlogFormShown] = useState(false)
 
@@ -31,12 +30,11 @@ const [blogFormShown, setBlogFormShown] = useState(false)
     }
   }, [])
 
- 
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-    const user = await loginService.login({ username, password})
+    const user = await loginService.login({ username, password })
     window.localStorage.setItem('loggedUser', JSON.stringify(user))
     blogService.setToken(user.token)
     setUser(user)
@@ -46,7 +44,6 @@ const [blogFormShown, setBlogFormShown] = useState(false)
     setErrorMessage('Wrong username or password')
     setTimeout(() =>
       setErrorMessage(null), 5000)
-    
   }
 }
 
@@ -65,7 +62,6 @@ const handleAddBlog = async (blogObject) => {
       setErrorMessage('couldnt add blog')
       setTimeout(() =>
         setErrorMessage(null), 5000)
-      
     }
 }
 
@@ -78,7 +74,7 @@ const handleLike = async (blog) => {
     url: blog.url
   }
   const got = await blogService.update(blog.id, updatedBlog)
-  setBlogs(blogs.map(r => r.id === blog.id ? {...got, user: blog.user } : r))
+  setBlogs(blogs.map(r => r.id === blog.id ? { ...got, user: blog.user } : r))
 }
 
 const handleRemove = async (blog) => {
@@ -117,7 +113,7 @@ const newBlogForm = () => {
             <input
               type="text"
               value={username}
-              onChange={({ target}) =>
+              onChange={({ target }) =>
             setUsername(target.value)}
             />
           </div>
@@ -126,7 +122,7 @@ const newBlogForm = () => {
             <input
               type="password"
               value={password}
-              onChange={({ target}) =>
+              onChange={({ target }) =>
             setPassword(target.value)}
             />
           </div>
@@ -148,7 +144,7 @@ const newBlogForm = () => {
   <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemove={handleRemove} user={user} />
 )}
     </div>
-    
+
   )
   }
 
