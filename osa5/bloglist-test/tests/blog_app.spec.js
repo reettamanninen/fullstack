@@ -20,4 +20,15 @@ describe('Blog app', () => {
     await expect(page.getByText('Password')).toBeVisible()
     await expect(page.getByRole('button', { name: 'login'})).toBeVisible()
   })
+
+  describe('Login', () => {
+    test('succeeds with correct credentials', async ({ page }) => {
+      await page.getByPlaceholder('Username').fill('mluukkai')
+      await page.getByPlaceholder('Password').fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await expect(page.getByRole('button', { name: 'logout'})).toBeVisible()
+    })
+
+
+  })
 })

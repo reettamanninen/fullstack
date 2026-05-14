@@ -110,7 +110,7 @@ const newBlogForm = () => {
         <form onSubmit={handleLogin}>
           <div>
             username{' '}
-            <input
+            <input placeholder='username'
               type="text"
               value={username}
               onChange={({ target }) =>
@@ -119,7 +119,7 @@ const newBlogForm = () => {
           </div>
           <div>
             password{' '}
-            <input
+            <input placeholder='password'
               type="password"
               value={password}
               onChange={({ target }) =>
