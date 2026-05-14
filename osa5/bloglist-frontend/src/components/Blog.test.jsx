@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
+import NewBlogForm from './newBlogForm'
 
 
 test('renders only title and author', () => {
@@ -64,3 +65,26 @@ test ('when like is pressed twice funktio is called twice', async () => {
       expect(mockHandler).toHaveBeenCalled(2)
     
     })
+
+    test ('blog form calls correct details', async () => {
+        const mockHandler = vi.fn()
+
+        render(<NewBlogForm createBlog={mockHandler} />)
+
+        const user = userEvent.setup()
+        const titleInput = screen.getByPlaceholderText('title')
+        const authorInput = screen.getByPlaceholderText('author')
+        const urlInput = screen.getByPlaceholderText('url')
+        await user.type(titleInput, 'asonfao')
+        await user.type(authorInput, 'adsfew')
+        await user.type(urlInput, 'sdgfew')
+        const submitButton = screen.getByText('create')
+        await user.click(submitButton)
+
+        expect(mockHandler).toHaveBeenCalledTimes(1)
+        expect(mockHandler).toHaveBeenCalledWith({
+            title: 'asonfao',
+            author: 'adsfew',
+            url: 'sdgfew'
+        })
+        })
