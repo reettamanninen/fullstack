@@ -31,7 +31,7 @@ const [blogFormShown, setBlogFormShown] = useState(false)
     }
   }, [])
 
-  
+ 
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -59,7 +59,7 @@ const handleAddBlog = async (blogObject) => {
   try {
     const newBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(newBlog))
-    setOkMessage(`a new blog ${title} added`)
+    setOkMessage(`a new blog ${blogObject.title} added`)
     setTimeout(() => setOkMessage(null), 5000)
    } catch (exception) {
       setErrorMessage('couldnt add blog')
@@ -67,6 +67,18 @@ const handleAddBlog = async (blogObject) => {
         setErrorMessage(null), 5000)
       
     }
+}
+
+const handleLike = async (blog) => {
+  const updatedBlog = {
+    user: blog.user._id,
+    likes: blog.likes +1,
+    title: blog.title,
+    author: blog.author,
+    url: blog.url
+  }
+  const got = await blogService.update(blog.id, updatedBlog)
+  setBlogs(blogs.map(r => r.id === blog.id ? {...got, user: blog.user } : r))
 }
 
 const newBlogForm = () => {
@@ -124,9 +136,9 @@ const newBlogForm = () => {
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
        {newBlogForm()}
-        {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+       {blogs.map(blog =>
+  <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+)}
     </div>
     
   )
